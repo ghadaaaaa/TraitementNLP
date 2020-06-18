@@ -1,24 +1,29 @@
 # -*- coding: utf-8 -*-
-from TraitementFiches import functionsFiches as fun
+import functionsFiches as fun
 import json
 from flask import Flask, jsonify, request
 app = Flask(__name__)
-
 @app.route('/')
 def home():
     return "<h1>Hello World!</h1>"
 
 
-@app.route('/alawi/', methods = ['POST'])
-def alawi():
+@app.route('/maisonCat/', methods = ['POST'])
+def recupFiches():
     if request.method == 'POST':
         decoded_data = request.data.decode('utf-8')
         params = json.loads(decoded_data)
         if (params['typeMaison']== "alawi"):
-            file = "FichesCSV\Alawi\EltsMaisonAlawi.csv"
+            file = "Data\Fiches\EltsMaisonAlawi.csv"
             elts = fun.get_files_data(file)
-            results=[]
-
+        if (params['typeMaison']== "westDar"):
+            file = "Data\Fiches\EltsMaisonWestDar.csv"
+            elts = fun.get_files_data(file)
+        if (params['typeMaison']== "chbek"):
+            file = "Data\Fiches\EltsMaisonChbek.csv"
+            elts = fun.get_files_data(file)
+        results = []
+        if (elts):
             for elt in elts:
                 fonctions=[]
                 fonctions.clear()
@@ -42,6 +47,7 @@ def alawi():
                                 'fonctions': fonctions,
                                 'images': images,
                                 'sources': sources})
+
     return jsonify({'results': results})
 
 
